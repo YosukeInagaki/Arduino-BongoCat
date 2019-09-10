@@ -10,10 +10,6 @@
 #define OLED_RESET     4 // Reset pin # (or -1 if sharing Arduino reset pin)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-boolean ledState = LOW;
-unsigned long ledPreviousMillis = 0;
-const long ledInterval = 1000;
-
 boolean bongoState = false;
 unsigned long bongoPreviousMillis = 0;
 const long bongoInterval = 100; 
@@ -155,8 +151,6 @@ const unsigned char bongoup [] PROGMEM =
   B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,B00000000,B00000000 };
 void setup()
 {
-  pinMode(LED_BUILTIN, OUTPUT);
-  
   Serial.begin(9600);
   // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
   if(!display.begin(SSD1306_SWITCHCAPVCC, 0x3C))
@@ -171,7 +165,6 @@ void setup()
 
 void loop()
 {
-  updateLED();
   updateBongo();
   delay(20);
 }
@@ -201,16 +194,5 @@ void updateBongo()
       bongoup, BONGO_WIDTH, BONGO_HEIGHT, 1);
       display.display();
     }
-  }
-}
-
-void updateLED()
-{
-  unsigned long currentMillis = millis();
-  if(currentMillis - ledPreviousMillis >= ledInterval)
-  {
-    ledPreviousMillis = currentMillis;
-    ledState = !ledState;
-    digitalWrite(LED_BUILTIN, ledState);
   }
 }
